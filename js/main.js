@@ -99,13 +99,30 @@ const singleRotue = (id) => {
     window.open(`/page/product.html?id=${id}`, '_self')
 }
 
+const switchId = async (id) =>{
+    let data = await fetch(`${API_URL}/${id}`);
+    data
+        .json()
+        .then(res => {
+          let wishese =JSON.parse(localStorage.getItem('wishese')) || []
+          let index = wishese.findIndex(el => el.id === +id);
+         if (index < 0) {
+             localStorage.setItem('wishese',JSON.stringify([...wishese, res]))
+         }
+         
+        })
+        .catch(err => console.log(err))
+       
+}
+
 output.addEventListener('click', e => {
-    // let {name} = e.target.name;
-    if (e.target.name === 'prduct-image') {
+    let {name} = e.target;
+    if (name === 'prduct-image') {
         let id = e.target.closest("[data-id]").dataset.id;
         singleRotue(id)
-    }else if (e.target.name === 'prduct-heart') {
-        console.log('heart');
+    }else if (name === 'prduct-heart') {
+        let id = e.target.closest("[data-id]").dataset.id;
+       switchId(id);
     }
 })
 
